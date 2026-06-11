@@ -1,1 +1,87 @@
+# .github/workflows/ci.yml
+# Runs on every push and pull request to main.
+# Builds, lints, and tests PatchLens.
+# Also runs PatchLens itself on PRs to demonstrate dogfooding.
 
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Needed for git diff operations
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type-check
+        run: npx tsc --noEmit
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+  patchlens-self-analysis:
+    name: PatchLens Self-Analysis
+    runs-on: ubuntu-latest
+    # Only run on PRs so we have a base and head to compare
+    if: github.event_name == 'pull_request'
+    needs: build-and-test
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build PatchLens
+        run: npm run build
+
+      - name: Run PatchLens on this PR
+        # Analyze the diff between the PR base and head
+        run: |
+          node dist/cli.js analyze \
+            --base origin/${{ github.base_ref }} \
+            --head HEAD \
+            --output patchlens-report.md \
+            --format markdown
+        continue-on-error: true  # Don't fail CI if risk is critical; just surface the report
+
+      - name: Upload PatchLens report as artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: patchlens-impact-report
+          path: patchlens-report.md
