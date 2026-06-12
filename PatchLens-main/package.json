@@ -1,0 +1,38 @@
+{
+  "name": "patchlens",
+  "version": "0.1.0",
+  "description": "Analyze git diffs and explain technical impact across a repository.",
+  "type": "module",
+  "bin": {
+    "patchlens": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "ts-node --esm src/cli.ts",
+    "start": "node dist/cli.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint src tests --ext .ts",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "commander": "^12.0.0",
+    "simple-git": "^3.22.0",
+    "glob": "^10.3.10"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "eslint": "^8.56.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": ["git", "diff", "code-review", "developer-tools", "cli"],
+  "license": "MIT"
+}
