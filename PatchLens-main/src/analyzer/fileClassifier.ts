@@ -53,6 +53,7 @@ const CATEGORY_PATTERNS: Array<{
       /^\.github\//,
       /^Makefile$/,
       /^\.eslintrc/,
+      /^vitest\.config/
     ],
   },
   {
