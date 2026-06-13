@@ -1,4 +1,4 @@
-# PatchLens 🔍
+# PatchLens
 
 **Analyze git diffs and understand their technical impact across a repository.**
 
