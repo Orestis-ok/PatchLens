@@ -72,6 +72,9 @@ export interface AnalysisResult {
     head: string;
     analyzedAt: string;
     repoPath: string;
+    prUrl?: string;
+    prTitle?: string;
+    prAuthor?: string;
   };
   changedFiles: ChangedFile[];
   dependencyEdges: DependencyEdge[];
@@ -90,4 +93,6 @@ export interface AnalyzeOptions {
   output: string;
   format: "markdown" | "json";
   repoPath: string;
+  prUrl?: string;
+  token?: string;
 }

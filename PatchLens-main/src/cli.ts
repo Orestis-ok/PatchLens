@@ -1,7 +1,6 @@
 // src/cli.ts
 // PatchLens CLI entry point.
-// Defines the `analyze` command with all options, runs the analysis pipeline,
-// and writes the report.
+// Supports both local git diff (--base/--head) and GitHub PR (--pr) modes.
 
 import { Command } from "commander";
 import chalk from "chalk";
@@ -17,37 +16,51 @@ program
   .description(
     "Analyze a git diff and explain its technical impact across a repository."
   )
-  .version("0.1.0");
+  .version("0.2.0");
 
 program
   .command("analyze")
   .description("Analyze the diff between two git refs and produce an impact report")
   .option("--base <ref>", "Base branch or commit to diff from", "main")
   .option("--head <ref>", "Head branch or commit to diff to", "HEAD")
+  .option("--pr <url>", "GitHub Pull Request URL to analyze instead of local diff")
+  .option("--token <token>", "GitHub personal access token (or set GITHUB_TOKEN env var)")
   .option("--output <path>", "Output file path", "patchlens-report.md")
   .option("--format <format>", "Output format: markdown or json", "markdown")
   .option("--repo <path>", "Path to the git repository", process.cwd())
   .action(async (opts) => {
+    const token = opts.token ?? process.env.GITHUB_TOKEN;
+
     const options: AnalyzeOptions = {
       base: opts.base,
       head: opts.head,
       output: path.resolve(opts.output),
       format: opts.format === "json" ? "json" : "markdown",
       repoPath: path.resolve(opts.repo),
+      prUrl: opts.pr,
+      token,
     };
 
     console.log("");
     console.log(chalk.bold.cyan("  🔍 PatchLens") + chalk.gray(" — diff impact analyzer"));
     console.log("");
-    console.log(chalk.gray(`  Repository : ${options.repoPath}`));
-    console.log(chalk.gray(`  Base       : ${options.base}`));
-    console.log(chalk.gray(`  Head       : ${options.head}`));
+
+    if (options.prUrl) {
+      console.log(chalk.gray(`  Mode       : GitHub PR`));
+      console.log(chalk.gray(`  PR URL     : ${options.prUrl}`));
+    } else {
+      console.log(chalk.gray(`  Mode       : Local git diff`));
+      console.log(chalk.gray(`  Repository : ${options.repoPath}`));
+      console.log(chalk.gray(`  Base       : ${options.base}`));
+      console.log(chalk.gray(`  Head       : ${options.head}`));
+    }
+
     console.log(chalk.gray(`  Output     : ${options.output}`));
     console.log(chalk.gray(`  Format     : ${options.format}`));
     console.log("");
 
     try {
-      console.log(chalk.blue("  [1/3]") + " Reading git diff...");
+      console.log(chalk.blue("  [1/3]") + " Reading diff...");
       const result = await analyze(options);
 
       const total = result.changedFiles.length;
@@ -64,9 +77,7 @@ program
       console.log(
         chalk.blue("  [3/3]") +
           " Risk score: " +
-          riskColor(
-            `${result.risk.level.toUpperCase()} (${result.risk.score}/100)`
-          )
+          riskColor(`${result.risk.level.toUpperCase()} (${result.risk.score}/100)`)
       );
 
       await writeReport(result, options);
@@ -94,7 +105,6 @@ program
 
       console.log("");
 
-      // Exit with non-zero code on critical risk so CI pipelines can react
       if (result.risk.level === "critical") {
         process.exit(1);
       }

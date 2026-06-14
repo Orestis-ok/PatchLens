@@ -30,17 +30,13 @@ export async function readDiff(
     );
   }
 
-  // Get the diff summary (insertions/deletions per file)
-  const summary = await git.diffSummary([`${base}...${head}`]);
+const summary = await git.diffSummary([`${base}..${head}`]);
+const rawDiff = await git.diff([`${base}..${head}`]);
 
-  // Get the full text diff for dependency parsing later
-  const rawDiff = await git.diff([`${base}...${head}`]);
-
-  // Get rename/add/delete status per file
-  const nameStatus = await git.diff([
-    "--name-status",
-    `${base}...${head}`,
-  ]);
+const nameStatus = await git.diff([
+  "--name-status",
+  `${base}..${head}`,
+]);
 
   const statusMap = parseNameStatus(nameStatus);
 
