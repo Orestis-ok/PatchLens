@@ -57,9 +57,15 @@ export function buildMarkdownReport(result: AnalysisResult): string {
   lines.push("");
   lines.push(`| Field | Value |`);
   lines.push(`|-------|-------|`);
+if (meta.prUrl) {
+    lines.push(`| Pull Request | [${meta.prTitle ?? meta.prUrl}](${meta.prUrl}) |`);
+    lines.push(`| Author | \`${meta.prAuthor ?? "unknown"}\` |`);
+  }
   lines.push(`| Base | \`${meta.base}\` |`);
   lines.push(`| Head | \`${meta.head}\` |`);
-  lines.push(`| Repository | \`${meta.repoPath}\` |`);
+  if (!meta.prUrl) {
+    lines.push(`| Repository | \`${meta.repoPath}\` |`);
+  }
   lines.push(`| Files Changed | ${changedFiles.length} |`);
   lines.push(`| Lines Added | +${totalAdditions} |`);
   lines.push(`| Lines Deleted | -${totalDeletions} |`);
