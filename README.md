@@ -207,19 +207,3 @@ Add PatchLens to your CI pipeline to analyze every PR automatically:
 ## Contributing
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md) for branch naming, PR guidelines, and local setup instructions.
-
----
-
-## Roadmap
-
-| Version | Status | Goal |
-|---------|--------|------|
-| v0.1.0 | Complete | Local git diff → Markdown report, risk scoring, test warnings |
-| v0.2.0 | Planned | GitHub PR support (`--pr` flag), full-repo dependency walking |
-| v1.0.0 | Planned | npm publish, official GitHub Action, stable JSON schema |
-
----
-
-## License
-
-MIT
