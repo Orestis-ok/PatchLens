@@ -2,22 +2,20 @@
 
 **Analyze git diffs and understand their technical impact across a repository.**
 
-PatchLens reads a local git diff, classifies every changed file, maps dependency chains, identifies related tests, and produces a structured Markdown or JSON impact report — helping you answer:
-
-> *"What could this change affect, what is risky, and what should I verify before merging?"*
+PatchLens reads a local git diff, classifies every changed file, maps dependency chains, identifies related tests, and produces a structured Markdown or JSON impact report.
 
 ---
 
 ## Features
 
-- 📁 **File classification** — source, tests, config, deps, schema, routes, UI, docs
-- 🔗 **Dependency mapping** — detects import/require chains between changed files
-- 🧪 **Test finder** — matches changed source files to their test files
-- ⚠️ **Missing test warnings** — flags source changes with no corresponding tests
-- 📊 **Risk scoring** — 0–100 score with factor breakdown (low / medium / high / critical)
-- ✅ **Verification checklist** — tailored action items per change type
-- 📝 **Markdown + JSON output**
-- 🤖 **GitHub Actions integration** — analyze every PR automatically
+- **File classification** — source, tests, config, deps, schema, routes, UI, docs
+- **Dependency mapping** — detects import/require chains between changed files
+- **Test finder** — matches changed source files to their test files
+- **Missing test warnings** — flags source changes with no corresponding tests
+- **Risk scoring** — 0–100 score with factor breakdown (low / medium / high / critical)
+- **Verification checklist** — tailored action items per change type
+- **Markdown + JSON output**
+- **GitHub Actions integration** — analyze every PR automatically
 
 ---
 
@@ -116,10 +114,10 @@ PatchLens writes a Markdown report (or JSON) containing:
 
 | Level | Score | Meaning |
 |-------|-------|---------|
-| 🟢 LOW | 0–24 | Limited blast radius, straightforward review |
-| 🟡 MEDIUM | 25–49 | Several areas touched, verify affected paths |
-| 🟠 HIGH | 50–74 | Significant scope or risky areas, careful review needed |
-| 🔴 CRITICAL | 75–100 | Schema, deps, or wide blast radius — thorough review required |
+| LOW | 0–24 | Limited blast radius, straightforward review |
+| MEDIUM | 25–49 | Several areas touched, verify affected paths |
+| HIGH | 50–74 | Significant scope or risky areas, careful review needed |
+| CRITICAL | 75–100 | Schema, deps, or wide blast radius — thorough review required |
 
 ---
 
@@ -216,9 +214,9 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for branch naming, PR guidelines, and l
 
 | Version | Status | Goal |
 |---------|--------|------|
-| v0.1.0 | ✅ Complete | Local git diff → Markdown report, risk scoring, test warnings |
-| v0.2.0 | 🔜 Planned | GitHub PR support (`--pr` flag), full-repo dependency walking |
-| v1.0.0 | 📋 Planned | npm publish, official GitHub Action, stable JSON schema |
+| v0.1.0 | Complete | Local git diff → Markdown report, risk scoring, test warnings |
+| v0.2.0 | Planned | GitHub PR support (`--pr` flag), full-repo dependency walking |
+| v1.0.0 | Planned | npm publish, official GitHub Action, stable JSON schema |
 
 ---
 
